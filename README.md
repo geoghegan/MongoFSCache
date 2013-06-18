@@ -10,3 +10,6 @@ gcc -o MongoFS MongoFS.c -lm
 
 ## Running 
 ./MongoFS /path/to/database/directory/DB.*
+
+## Licence
+Apache 2.0, as per it's big brother, [linux-ftools](https://code.google.com/p/linux-ftools/), of which this is a fork
