@@ -1,4 +1,4 @@
-MongoFS
+MongoFSCache
 =======
 
 This program will tell you, roughly (and I mean roughly) how much of the Linux Filesystem Cache is being used by a single MongoDB database.
