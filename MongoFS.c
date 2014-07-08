@@ -10,6 +10,7 @@
 #include <math.h>
 #include <errno.h>
 #include <locale.h>
+#include <string.h>
 #include <sys/ioctl.h> 
 
 struct fincore_result 
@@ -103,26 +104,32 @@ void fincore(char* path, struct fincore_result *result )
 
 int main(int argc, char *argv[]) 
 {
-    
-	long total_cached_size = 0;
-        
-	if (optind < argc) 
-	{
-		while (optind < argc) 
-		{
-			char* path = argv[optind++];
-			
-			struct fincore_result result;
 
-			fincore( path, &result );
+    long division_factor;
+    long total_cached_size = 0;
+    if (argc < 2) 
+    {
+        printf("ERROR - no arguments passed. Please pass in output units and path to the database files - e.g. /data/db/myDB.*.\n-b or -B for bytes\n-k or -K for KB\n-m or -M for MB\n-g or -G for GB\n");
+	exit(EXIT_FAILURE);
+    }    
 
-		total_cached_size += result.cached_size;
+    // Sets units to Bytes, KB, MB, GB
+    if (strcmp(argv[1], "-b") == 0 || strcmp(argv[1], "-B") == 0) division_factor = 1;
+    if (strcmp(argv[1], "-k") == 0 || strcmp(argv[1], "-K") == 0) division_factor = 1024; 
+    if (strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "-M") == 0) division_factor = 1024 * 1024; 
+    if (strcmp(argv[1], "-g") == 0 || strcmp(argv[1], "-G") == 0) division_factor = 1024 * 1024 * 1024 ;
 
-       		}
+    int arg_number;
+    for (arg_number=2; arg_number < argc; arg_number++) {
+        char* path = argv[arg_number];
+        struct fincore_result result;
 
-	}
-   
-	printf( "%'ld\n", total_cached_size );
+        fincore( path, &result );
+
+        total_cached_size += result.cached_size;
+    }
+
+   	printf( "%'ld\n", total_cached_size / division_factor );
 
 	return EXIT_SUCCESS;
 
